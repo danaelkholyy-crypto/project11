@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>COSMOS - Space Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        :root {
+            --bg: #0b1120;
+            --panel: #111a2e;
+            --panel-2: #0f172a;
+            --border: #1e2a44;
+            --blue: #3b82f6;
+            --muted: #8b97b3;
+        }
+
+        body {
+            background: radial-gradient(circle at 80% 100%, #12214d 0%, var(--bg) 50%);
+            color: #e8ecf5;
+            font-family: "Inter", sans-serif;
+            min-height: 100vh;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        .brand-name {
+            font-family: "Space Grotesk", sans-serif;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .text-muted-2 {
+            color: var(--muted) !important;
+        }
+
+        /* ---------- Sidebar ---------- */
+        .sidebar {
+            position: fixed;
+            inset: 0 auto 0 0;
+            width: 205px;
+            background: #0a0f1d;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .logo-box {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            display: grid;
+            place-items: center;
+        }
+
+        .brand-name {
+            background: linear-gradient(90deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .nav-item-btn {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            padding: .6rem .8rem;
+            border-radius: 10px;
+            color: #cbd5e1;
+            cursor: pointer;
+            font-size: .9rem;
+            border: 1px solid transparent;
+        }
+
+        .nav-item-btn:hover {
+            background: #111a2e;
+        }
+
+        .nav-item-btn.active {
+            background: #12203d;
+            color: var(--blue);
+        }
+
+        .user-card {
+            background: #111a2e;
+            border-radius: 10px;
+            padding: .6rem .75rem;
+        }
+
+        .user-card:hover {
+            background-color: rgb(49, 65, 88);
+        }
+
+        .user-card .flex-grow-1 {
+            min-width: 0;
+        }
+
+        .user-card .flex-grow-1 small {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgb(94, 108, 255), rgb(133, 70, 253));
+            display: grid;
+            place-items: center;
+            font-size: .75rem;
+            flex-shrink: 0;
+            min-width: 28px;
+        }
+
+        /* ---------- Main ---------- */
+        .main-wrap {
+            margin-left: 205px;
+        }
+
+        .topbar {
+            border-bottom: 1px solid var(--border);
+            padding: .9rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 15, 29, .7);
+        }
+
+        .topbar h1 {
+            font-size: 1.1rem;
+            margin: 0;
+            background: linear-gradient(90deg, #60a5fa, #f472b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .stats-pill {
+            display: flex;
+            gap: .9rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 28px;
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 16px;
+            background: var(--panel-2);
+        }
+
+        .rocket {
+            color: rgb(194, 122, 255);
+        }
+
+        .dot-live {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        .content {
+            max-width: 1050px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+        }
+
+        /* ---------- Cards ---------- */
+        .box {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            height: 100%;
+        }
+
+        .info-tile {
+            background: rgba(255, 255, 255, .03);
+            border: 1px solid #18233d;
+            border-radius: 12px;
+            padding: .8rem 1rem;
+        }
+
+        .info-tile small {
+            color: var(--muted);
+            font-size: .7rem;
+            display: block;
+        }
+
+        .info-tile strong {
+            font-size: .95rem;
+        }
+
+        .row-line {
+            display: flex;
+            justify-content: space-between;
+            padding: .65rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: .8rem;
+        }
+
+        .row-line:last-child {
+            border-bottom: 0;
+        }
+
+        .row-line span:first-child {
+            color: var(--muted);
+        }
+
+        .btn-blue {
+            background: var(--blue);
+            color: #fff;
+            border-radius: 8px;
+            width: 100%;
+            padding: 6px 20px;
+        }
+
+        .btn-blue:hover {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .btn-dark-2 {
+            background: var(--panel-2);
+            border: 1px solid var(--border);
+            color: #e8ecf5;
+            border-radius: 8px;
+        }
+
+        .btn-dark-2:hover {
+            background: #17233f;
+            color: #fff;
+        }
+
+        .form-control-dark {
+            background: var(--panel-2);
+            border: 1px solid var(--border);
+            color: #fff;
+            border-radius: 8px;
+        }
+
+        .form-control-dark:focus {
+            background: var(--panel-2);
+            color: #fff;
+            border-color: var(--blue);
+            box-shadow: none;
+        }
+
+        .badge-soft {
+            background: rgba(59, 130, 246, .15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, .3);
+            font-weight: 500;
+        }
+
+        .status-go {
+            color: #22c55e;
+            font-size: .8rem;
+        }
+
+        /* APOD */
+        .apod-frame {
+            min-height: 480px;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+
+        .apod-frame img,
+        .apod-frame iframe {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Launches */
+        .countdown-box {
+            display: inline-flex;
+            gap: .8rem;
+            align-items: center;
+            background: linear-gradient(135deg, #1e2d5a, #1a2243);
+            border: 1px solid #2a3b73;
+            border-radius: 12px;
+            padding: .8rem 1.2rem;
+        }
+
+        .launch-img {
+            width: 100%;
+            height: 100%;
+            min-height: 360px;
+            object-fit: cover;
+            border-radius: 14px;
+            background: #000;
+        }
+
+        .launch-card img {
+            height: 180px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        /* Planets */
+        .planet-btn {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 26px 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .Uranus:hover {
+            border-color: rgb(13, 106, 131);
+        }
+
+        .Neptune:hover,
+        .Earth:hover {
+            border-color: rgb(29, 65, 143);
+        }
+
+        .Jupiter:hover,
+        .Venus:hover {
+            border-color: rgb(136, 88, 55);
+        }
+
+        .Mars:hover {
+            border-color: rgb(130, 49, 59);
+        }
+
+        .Mercury:hover,
+        .Saturn:hover {
+            border-color: rgb(127, 105, 30);
+        }
+
+        .planet-btn img {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .planet-btn:hover img {
+            transform: scale(1.2);
+        }
+
+        .planet-btn small {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 900;
+            line-height: 16px;
+            display: block;
+        }
+
+        .small {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 20px;
+        }
+
+        .planet-big {
+            width: 100%;
+            max-width: 190px;
+            height: 100%;
+        }
+
+        .loader {
+            display: grid;
+            place-items: center;
+            color: var(--muted);
+            font-size: .85rem;
+            gap: .6rem;
+        }
+
+        /* Comparison table */
+        .compare-box {
+            overflow: hidden;
+        }
+
+        .compare-table {
+            --bs-table-bg: transparent;
+            --bs-table-color: #e8ecf5;
+            --bs-table-border-color: var(--border);
+            --bs-table-hover-bg: rgba(255, 255, 255, .03);
+            --bs-table-hover-color: #e8ecf5;
+        }
+
+        .compare-table th,
+        .compare-table td {
+            padding: 1rem 1.25rem;
+            font-size: .8rem;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        .compare-table thead th {
+            background: var(--panel-2);
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        .planet-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .type-badge {
+            font-size: .65rem;
+            padding: .2rem .5rem;
+            border-radius: 4px;
+        }
+
+        .type-badge.ice-giant {
+            background: rgba(59, 130, 246, .25);
+            color: #60a5fa;
+        }
+
+        .type-badge.gas-giant {
+            background: rgba(139, 92, 246, .3);
+            color: #c4b5fd;
+        }
+
+        .type-badge.terrestrial {
+            background: rgba(234, 88, 12, .3);
+            color: #fdba74;
+        }
+
+        @media (max-width: 991px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                overflow-x: auto;
+                padding: .5rem;
+            }
+
+            .sidebar .logo-wrap {
+                display: none;
+            }
+
+            .sidebar nav {
+                display: flex;
+                gap: .3rem;
+                flex: 1;
+            }
+
+            .sidebar .user-wrap {
+                display: none;
+            }
+
+            .main-wrap {
+                margin-left: 0;
+            }
+
+            .topbar .stats-pill {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
+        <div class="logo-wrap d-flex align-items-center gap-2 p-3">
+            <div class="logo-box"><i class="fa-solid fa-rocket"></i></div>
+            <div>
+                <div class="brand-name">COSMOS</div>
+                <small class="text-muted-2" style="font-size:.65rem">Space Dashboard</small>
+            </div>
+        </div>
+
+        <nav class="px-3 pt-2 d-flex flex-column gap-1">
+            <div class="nav-item-btn active" data-section="today"><i class="fa-regular fa-image"></i> Today in Space
+            </div>
+            <div class="nav-item-btn" data-section="launches"><i class="fa-solid fa-rocket"></i> Launches</div>
+            <div class="nav-item-btn" data-section="planets"><i class="fa-solid fa-globe"></i> Planets</div>
+        </nav>
+
+        <div class="user-wrap mt-auto p-3 border-top" style="border-color: var(--border) !important">
+            <div class="user-card d-flex align-items-center gap-2">
+                <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                <div class="flex-grow-1" style="line-height:1.2">
+                    <div style="font-size:.75rem">Space Explorer</div>
+                    <small class="text-muted-2" style="font-size:.6rem">explorer@cosmos.space</small>
+                </div>
+                <i class="fa-solid fa-ellipsis-vertical text-muted-2"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ================= MAIN ================= -->
+    <div class="main-wrap">
+
+        <header class="topbar">
+            <div>
+                <h1>Space Explorer Dashboard</h1>
+                <small class="text-muted-2" style="font-size:.7rem">Real-time space data from NASA &amp;
+                    SpaceDevs</small>
+            </div>
+            <div class="stats-pill">
+                <span><i class="dot-live"></i>Live Data</span>
+                <span><i class="fa-solid fa-globe text-primary me-1"></i><b id="planets-count">8</b> Planets</span>
+                <span><i class="fa-solid fa-rocket rocket me-1"></i><b id="launches-count">10</b> Launches</span>
+            </div>
+        </header>
+
+        <main class="content">
+
+            <!-- ============ 1) TODAY IN SPACE ============ -->
+            <section id="today" class="app-section">
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+                    <div>
+                        <h2 class="fw-bold fs-4 mb-1">Today in Space</h2>
+                        <small class="text-muted-2">Astronomy Picture of the Day - <span
+                                id="apod-subtitle-date"></span></small>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <input type="date" id="apod-date" class="form-control form-control-dark form-control-sm" />
+                        <button id="apod-load-btn" class="btn btn-blue btn-sm px-3"><i
+                                class="fa-solid fa-magnifying-glass me-1"></i>Load</button>
+                        <button id="apod-today-btn" class="btn btn-dark-2 btn-sm px-3">Today</button>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Image -->
+                    <div class="col-lg-8">
+                        <div class="box apod-frame" id="apod-media">
+                            <div class="loader" id="apod-loader">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <span>Loading today's image...</span>
+                            </div>
+                            <!-- JS: <img> أو <iframe> للفيديو -->
+                        </div>
+                    </div>
+
+                    <!-- Side info -->
+                    <div class="col-lg-4 d-flex flex-column gap-4">
+                        <div class="box p-4">
+                            <small class="text-muted-2"><i class="fa-regular fa-calendar me-2"></i><span
+                                    id="apod-date-text">--</span></small>
+                        </div>
+
+                        <div class="box p-4">
+                            <h6 class="fw-bold mb-2"><i class="fa-solid fa-circle-info text-primary me-2"></i>Image
+                                Details</h6>
+                            <div class="row-line"><span>Date</span><span id="apod-detail-date">--</span></div>
+                            <div class="row-line"><span>Media Type</span><span id="apod-detail-type">--</span></div>
+                            <div class="row-line"><span>Source</span><span>NASA APOD</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ 2) LAUNCHES ============ -->
+            <section id="launches" class="app-section hidden">
+                <h2 class="fw-bold fs-3 mb-1">Upcoming Launches</h2>
+                <p class="text-muted-2 mb-4">Real-time tracking of the next missions to space</p>
+
+                <!-- Featured launch -->
+                <div class="box p-4 mb-4" id="featured-launch">
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <span class="badge badge-soft rounded-pill px-3 py-2"><i
+                                        class="fa-solid fa-star me-1"></i>Featured Launch</span>
+                                <span class="status-go" id="featured-status">Go</span>
+                            </div>
+                            <h3 class="fw-bold mb-2" id="featured-name">Launch name</h3>
+                            <div class="text-muted-2 small mb-3">
+                                <span class="me-3"><i class="fa-regular fa-building me-1"></i><span
+                                        id="featured-agency">--</span></span>
+                                <span><i class="fa-solid fa-rocket me-1"></i><span id="featured-rocket">--</span></span>
+                            </div>
+
+                            <div class="countdown-box mb-3">
+                                <i class="fa-regular fa-clock fs-4 text-primary"></i>
+                                <div>
+                                    <div class="fs-5 fw-bold" id="featured-days" style="line-height:1">--</div>
+                                    <small class="text-muted-2" style="font-size:.7rem">Days Until Launch</small>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <div class="info-tile"><small><i class="fa-regular fa-calendar me-1"></i>Launch
+                                            Date</small><strong id="featured-date">--</strong></div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-tile"><small><i class="fa-regular fa-clock me-1"></i>Launch
+                                            Time</small><strong id="featured-time">--</strong></div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-tile"><small><i
+                                                class="fa-solid fa-location-dot me-1"></i>Location</small><strong
+                                            id="featured-location" style="font-size:.8rem">--</strong></div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-tile"><small><i
+                                                class="fa-solid fa-globe me-1"></i>Country</small><strong
+                                            id="featured-country" style="font-size:.85rem">--</strong></div>
+                                </div>
+                            </div>
+
+                            <p class="text-muted-2 small" id="featured-description">--</p>
+
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-blue flex-grow-1" id="featured-details-btn"><i
+                                        class="fa-solid fa-circle-info me-2"></i>View Full Details</button>
+                                <button class="btn btn-dark-2"><i class="fa-regular fa-heart"></i></button>
+                                <button class="btn btn-dark-2"><i class="fa-regular fa-bell"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <img id="featured-image" class="launch-img"
+                                src="./images/falcon2520925_image_20221009234147.png" alt="Rocket" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- باقي الرحلات -->
+                <div id="launches-loader" class="loader hidden py-4">
+                    <div class="spinner-border text-primary"></div>
+                </div>
+
+                <div class="row g-4" id="launches-grid">
+                    <!-- Launch card template: كرري واحد لكل رحلة من الـ JS -->
+                    <div class="col-md-6 col-xl-4">
+                        <div class="box launch-card overflow-hidden h-100">
+                            <img src="./images/falcon2520925_image_20221009234147.png" alt="Rocket" />
+                            <div class="p-3">
+                                <span class="status-go">Go</span>
+                                <h6 class="fw-bold mt-1">Launch name</h6>
+                                <ul class="list-unstyled text-muted-2 small mb-0">
+                                    <li class="mb-1"><i class="fa-regular fa-calendar me-2"></i>Date</li>
+                                    <li class="mb-1"><i class="fa-solid fa-rocket me-2"></i>Rocket</li>
+                                    <li><i class="fa-solid fa-location-dot me-2"></i>Location</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ 3) PLANETS ============ -->
+            <section id="planets" class="app-section hidden">
+                <h2 class="fw-bold fs-4 mb-1">Explore Our Solar System</h2>
+                <p class="text-muted-2 small mb-4">Discover the planets, moons, and celestial bodies in our cosmic
+                    neighborhood</p>
+
+                <!-- Planet selector row -->
+                <div class="row g-3 row-cols-8 row-cols-md-8 mb-4" id="planets-selector">
+                    <!-- Planet button template -->
+                    <div class="col">
+                        <div class="planet-btn Uranus">
+                            <img src="./images/uranus.png" alt="Planet" />
+                            <div class="small mt-2">Uranus</div>
+                            <small>19.19 AU</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="planet-btn Neptune">
+                            <img src="./images/neptune.png" alt="Planet" />
+                            <div class="small mt-2">Neptune</div>
+                            <small>30.07 AU</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="planet-btn Jupiter">
+                            <img src="./images/jupiter.png" alt="Planet" />
+                            <div class="small mt-2">Jupiter</div>
+                            <small>5.20 AU</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="planet-btn Mars">
+                            <img src="./images/mars.png" alt="Planet" />
+                            <div class="small mt-2">Mars</div>
+                            <small>1.52 AU</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="planet-btn Mercury">
+                            <img src="./images/mercury.png" alt="Planet" />
+                            <div class="small mt-2">Mercury</div>
+                            <small>0.39 AU</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="planet-btn Saturn">
+                            <img src="./images/saturn.png" alt="Planet" />
+                            <div class="small mt-2">Saturn</div>
+                            <small>9.54 AU</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="planet-btn Earth">
+                            <img src="./images/earth.png" alt="Planet" />
+                            <div class="small mt-2">Earth</div>
+                            <small>1.00 AU</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="planet-btn Venus">
+                            <img src="./images/venus.png" alt="Planet" />
+                            <div class="small mt-2">Venus</div>
+                            <small>0.72 AU</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Planet detail -->
+                    <div class="col-lg-8">
+                        <div class="box p-4">
+                            <div class="row g-4 align-items-center">
+                                <div class="col-md-5 text-center">
+                                    <img id="planet-image" class="planet-big" src="./images/earth.png" alt="Planet" />
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h3 class="fw-bold" id="planet-name">Earth</h3>
+                                        <button class="btn btn-dark-2 btn-sm"><i
+                                                class="fa-regular fa-heart"></i></button>
+                                    </div>
+                                    <p class="small" id="planet-description">--</p>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mt-3">
+                                <div class="col-6">
+                                    <div class="info-tile"><small><i class="fa-solid fa-ruler me-1"></i>Semimajor
+                                            Axis</small><strong id="planet-axis">--</strong></div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-tile"><small><i class="fa-solid fa-circle me-1"></i>Mean
+                                            Radius</small><strong id="planet-radius">--</strong></div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-tile"><small><i
+                                                class="fa-solid fa-weight-scale me-1"></i>Mass</small><strong
+                                            id="planet-mass">--</strong></div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-tile"><small><i
+                                                class="fa-solid fa-compress me-1"></i>Density</small><strong
+                                            id="planet-density">--</strong></div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-tile"><small><i class="fa-solid fa-rotate me-1"></i>Orbital
+                                            Period</small><strong id="planet-orbit">--</strong></div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-tile"><small><i
+                                                class="fa-solid fa-arrow-rotate-right me-1"></i>Rotation
+                                            Period</small><strong id="planet-rotation">--</strong></div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-tile"><small><i
+                                                class="fa-solid fa-moon me-1"></i>Moons</small><strong
+                                            id="planet-moons">--</strong></div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-tile"><small><i
+                                                class="fa-solid fa-arrows-up-down me-1"></i>Gravity</small><strong
+                                            id="planet-gravity">--</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Side cards -->
+                    <div class="col-lg-4 d-flex flex-column gap-4">
+                        <div class="box p-4">
+                            <h6 class="fw-bold mb-2"><i class="fa-solid fa-user-astronaut me-2"
+                                    style="color:#a78bfa"></i>Discovery Info</h6>
+                            <div class="row-line"><span>Discovered By</span><span id="planet-discovered-by">--</span>
+                            </div>
+                            <div class="row-line"><span>Discovery Date</span><span id="planet-discovery-date">--</span>
+                            </div>
+                            <div class="row-line"><span>Body Type</span><span id="planet-type">--</span></div>
+                            <div class="row-line"><span>Volume</span><span id="planet-volume">--</span></div>
+                        </div>
+
+                        <div class="box p-4">
+                            <h6 class="fw-bold mb-2"><i class="fa-regular fa-lightbulb me-2 text-warning"></i>Quick
+                                Facts</h6>
+                            <div class="row-line"><span>Mass</span><span id="quick-mass">--</span></div>
+                            <div class="row-line"><span>Density</span><span id="quick-density">--</span></div>
+                            <div class="row-line"><span>Gravity</span><span id="quick-gravity">--</span></div>
+                            <div class="row-line"><span>Escape Velocity</span><span id="planet-escape">--</span></div>
+                        </div>
+
+                        <div class="box p-4">
+                            <h6 class="fw-bold mb-2"><i class="fa-solid fa-satellite me-2 text-primary"></i>Orbital
+                                Characteristics</h6>
+                            <div class="row-line"><span>Perihelion</span><span id="planet-perihelion">--</span></div>
+                            <div class="row-line"><span>Aphelion</span><span id="planet-aphelion">--</span></div>
+                            <div class="row-line"><span>Eccentricity</span><span id="planet-eccentricity">--</span>
+                            </div>
+                            <div class="row-line"><span>Inclination</span><span id="planet-inclination">--</span></div>
+                            <div class="row-line"><span>Axial Tilt</span><span id="planet-tilt">--</span></div>
+                            <div class="row-line"><span>Avg Temperature</span><span id="planet-temp">--</span></div>
+                            <div class="row-line"><span>Escape Velocity</span><span id="planet-escape-kms">--</span>
+                            </div>
+                        </div>
+
+                        <a id="planet-learn-more" class="btn btn-blue py-2" href="https://en.wikipedia.org/wiki/Earth"
+                            target="_blank" rel="noopener">
+                            <i class="fa-solid fa-book me-2"></i>Learn More
+                        </a>
+                    </div>
+                </div>
+                <h3 class="fw-bold fs-5 mt-5 mb-3">Planet Comparison</h3>
+                <div class="box compare-box">
+                    <div class="table-responsive">
+                        <table class="table table-hover compare-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Planet</th>
+                                    <th>Distance (AU)</th>
+                                    <th>Diameter (km)</th>
+                                    <th>Mass (Earth=1)</th>
+                                    <th>Orbital Period</th>
+                                    <th>Moons</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comparison-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./main.js"></script>
+    <!-- <script>
+        // التنقل بين الأقسام
+        document.querySelectorAll("[data-section]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".app-section").forEach((s) => s.classList.add("hidden"));
+                document.getElementById(btn.dataset.section).classList.remove("hidden");
+                document.querySelectorAll("[data-section]").forEach((b) => b.classList.remove("active"));
+                btn.classList.add("active");
+            });
+        });
+    </script> -->
+</body>
+
+</html>
